@@ -14,7 +14,6 @@ do
     --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=$instance}]' \
     --query "Instances[0].InstanceId" \
     --output text )
-
     if [ $instance == "frontend" ]; then
         ID=$(
            aws ec2 describe-instances \
