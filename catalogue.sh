@@ -54,16 +54,19 @@ VALIDATE $? "Downloading project"
 cd /app 
 VALIDATE $? "Moving to app directory"
 
-unzip /tmp/catalogue.zip
+rm -rf /app/*
+VALIDATE $? "Removing existing code"
+
+unzip /tmp/catalogue.zip &>>$LOGS_FILE
 VALIDATE $? "Unzipping code"
 
-npm install 
+npm install &>>$LOGS_FILE
 VALIDATE $? "Installing dependencies"
 
 cp catalogue.service /etc/systemd/system/catalogue.service
 VALIDATE $? "Configuring systemctl service"
 
 systemctl daemon-reload
-systemctl enable catalogue 
+systemctl enable catalogue &>>$LOGS_FILE
 systemctl start catalogue
 VALIDATE $? "Starting and enabling catalogue"
