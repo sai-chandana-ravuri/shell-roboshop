@@ -13,19 +13,19 @@ B='\e[34m'
 N='\e[0m'
 
 if [ $USER_ID -ne 0 ]; then
-   echo -e "$RPlease use admin access to install..$N" | tee -a $LOGS_FILE
+   echo -e "$R Please use admin access to install.. $N" | tee -a $LOGS_FILE
    exit 1
 else
-   echo -e "$GProceeding with installation..$N"
+   echo -e "$G Proceeding with installation.. $N"
 fi
 
 mkdir -p $LOGS_FOLDER
 
 VALIDATE(){
 if [ $1 -eq 0 ]; then
-   echo -e "$2...$GSUCCESS$N" | tee -a $LOGS_FILE
+   echo -e "$2...$G SUCCESS $N" | tee -a $LOGS_FILE
 else
-   echo -e "$2...$RFAILURE$N" | tee -a $LOGS_FILE
+   echo -e "$2...$R FAILURE $N" | tee -a $LOGS_FILE
    exit 1
 fi
 }
@@ -39,12 +39,12 @@ VALIDATE $? "Enabling nodejs 20 version"
 dnf install nodejs -y &>>$LOGS_FILE
 VALIDATE $? "Installing Nodejs"
 
-id roboshop&>>$LOGS_FILE
+id roboshop &>>$LOGS_FILE
 if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOGS_FILE
     VALIDATE $? "Creating system user"
 else
-    echo "Roboshop user already existed.. $YSKIPPING$N"
+    echo "Roboshop user already existed.. $Y SKIPPING $N"
 fi
 
 mkdir -p /app 
@@ -76,5 +76,15 @@ VALIDATE $? "Starting and enabling catalogue"
 cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
 dnf install mongodb-mongosh -y &>>$LOGS_FILE
 
-mongosh --host $MONGODB_HOST </app/db/master-data.js
+INDEX=$(mongo $MONGODB_HOST --eval 'db.getMongo().getDBNames().indexOf("catalogue")' --quiet)
+if [ $INDEX -lt 0 ]; then
+    mongosh --host $MONGODB_HOST </app/db/master-data.js
+else
+    echo "Products already loaded.... $Y SKIPPING %N"
+fi
+
+systemctl restart catalogue
+VALIDATE $? "Restarting catalogue"
+
+
 
