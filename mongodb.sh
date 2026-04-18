@@ -3,7 +3,6 @@
 USER_ID=$(id -u)
 LOGS_FOLDER="/var/log/shell-roboshop"
 LOGS_FILE="/var/log/shell-roboshop/$0.log"
-SCRIPT_DIR=$PWD
 
 R='\e[31m'
 G='\e[32m'
@@ -29,7 +28,7 @@ else
 fi
 }
 
-cp SCRIPT_DIR/mongo.repo /etc/yum.repos.d &>>$LOGS_FILE
+cp mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
 VALIDATE $? "Copying Mongo Repo.."
 
 dnf install mongodb-org -y &>>$LOGS_FILE
