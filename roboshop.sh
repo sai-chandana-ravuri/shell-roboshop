@@ -11,7 +11,7 @@ do
     --count 1 \
     --instance-type t3.micro \
     --security-group-ids $SG_ID \
-    --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=$1}]' \
+    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance}]" \
     --query "Instances[0].InstanceId" \
     --output text )
     if [ $instance == "frontend" ]; then
@@ -29,4 +29,5 @@ do
            --output text
         )
     fi
+    echo "IP Address is: $ID"
 done
