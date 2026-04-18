@@ -14,7 +14,7 @@ if [ $USER_ID -ne 0 ]; then
    echo -e "$R Please use admin access to install.. $N" | tee -a $LOGS_FILE
    exit 1
 else
-   echo -e "$G Proceeding with installation.."
+   echo -e "$G Proceeding with installation.. $N"
 fi
 
 mkdir -p $LOGS_FOLDER
@@ -50,3 +50,20 @@ VALIDATE $? "Creating a app directory"
 
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOGS_FILE
 VALIDATE $? "Downloading project"
+
+cd /app 
+VALIDATE $? "Moving to app directory"
+
+unzip /tmp/catalogue.zip
+VALIDATE $? "Unzipping code"
+
+npm install 
+VALIDATE $? "Installing dependencies"
+
+cp catalogue.service /etc/systemd/system/catalogue.service
+VALIDATE $? "Configuring systemctl service"
+
+systemctl daemon-reload
+systemctl enable catalogue 
+systemctl start catalogue
+VALIDATE $? "Starting and enabling catalogue"
