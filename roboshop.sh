@@ -34,25 +34,18 @@ do
     fi
     echo "IP Address is: $ID"
     aws route53 change-resource-record-sets \
-    --hosted-zone-id $ZONE_ID \
-    --change-batch 
-    '
-    {
-       "Comment": "Updating a record",
-       "Changes": [
-          {
-            "Action": "UPSERT",
-            "ResourceRecordSet": {
-            "Name": "'$RECORD_NAME'",
-            "Type": "A",
-            "TTL": 300,
-            "ResourceRecords": [
-                { "Value": "'$ID'" }
-            ]
-          }
-     }
-   ]
-  }
-  '
+    --hosted-zone-id "$ZONE_ID" \
+    --change-batch "{
+    \"Comment\": \"Updating a record\",
+    \"Changes\": [{
+    \"Action\": \"UPSERT\",
+    \"ResourceRecordSet\": {
+    \"Name\": \"$RECORD_NAME\",
+    \"Type\": \"A\",
+    \"TTL\": 300,
+    \"ResourceRecords\": [{ \"Value\": \"$ID\" }]
+        }
+       }]
+      }"
   echo "Record updated for $instance"   
 done
