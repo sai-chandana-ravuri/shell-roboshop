@@ -78,12 +78,12 @@ VALIDATE $? "Copying Mongo repo"
 
 dnf install mongodb-mongosh -y &>>$LOGS_FILE
 
-INDEX=$(mongosh $MONGODB_HOST --eval 'db.getMongo().getDBNames().indexOf("catalogue")' --quiet)
+INDEX=$(mongosh --host $MONGODB_HOST --quiet --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
 if [ $INDEX -le 0 ]; then
     mongosh --host $MONGODB_HOST </app/db/master-data.js
     VALIDATE $? "Loading products"
 else
-    echo "Products already loaded.... $Y SKIPPING $N"
+    echo -e "Products already loaded.... $Y SKIPPING $N"
 fi
 
 systemctl restart catalogue
