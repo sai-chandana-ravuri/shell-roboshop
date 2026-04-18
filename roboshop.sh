@@ -6,7 +6,7 @@ AMI_ID=ami-09c813fb71547fc4f
 
 for instance in $@
 do
-    INSTANCE_ID=$( aws ec2 run-instances 
+    INSTANCE_ID=$( aws ec2 run-instances \
     --image-id $AMI_ID \
     --count 1 \
     --instance-type t3.micro \
