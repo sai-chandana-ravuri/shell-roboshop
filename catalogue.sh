@@ -78,7 +78,7 @@ VALIDATE $? "Copying Mongo repo"
 
 dnf install mongodb-mongosh -y &>>$LOGS_FILE
 
-INDEX=$(mongo $MONGODB_HOST --eval 'db.getMongo().getDBNames().indexOf("catalogue")' --quiet)
+INDEX=$(mongosh $MONGODB_HOST --eval 'db.getMongo().getDBNames().indexOf("catalogue")' --quiet)
 if [ $INDEX -le 0 ]; then
     mongosh --host $MONGODB_HOST </app/db/master-data.js
     VALIDATE $? "Loading products"
